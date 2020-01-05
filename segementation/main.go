@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/gomodule/redigo/redis"
@@ -29,13 +30,13 @@ func CheckSegment() {
 			video.Ext = ext
 			video.Set(path)
 
-			exists, err := redis.Int(conn.Do("EXISTS", video.Key))
+			exists, err := redis.Bool(conn.Do("EXISTS", strings.ToUpper(video.Key)))
 
 			if err != nil {
 				log.Println(err)
 			}
 
-			if exists == 0 {
+			if !exists {
 				videos = append(videos, video)
 			}
 		}

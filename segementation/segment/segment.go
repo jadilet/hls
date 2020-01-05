@@ -1,7 +1,6 @@
 package segment
 
 import (
-	"encoding/json"
 	"log"
 	"os"
 	"os/exec"
@@ -26,11 +25,11 @@ var SupportedExtensions = map[string]string{
 
 // Video struct
 type Video struct {
-	Name string // file name
-	Path string // file path
-	Dir  string // file directory
-	Ext  string // extension
-	Key  string // key for redis
+	Name string `redis:"name"` // file name
+	Path string `redis:"path"` // file path
+	Dir  string `redis:"dir"`  // file directory
+	Ext  string `redis:"ext"`  // extension
+	Key  string `redis:"key"`  // key for redis
 }
 
 // Set the Video struct values by the video file path
@@ -66,17 +65,10 @@ func (video Video) Segment() {
 		os.RemoveAll(video.Dir)
 		log.Println("finished segmenting with error ", err)
 	} else {
-		serialized, err := json.Marshal(&video)
 
-		if err != nil {
-			log.Println(err)
-		}
+		log.Println("finished segementing successfully ", video.Key)
 
-		log.Println("finished segementing successfully ", string(serialized))
-
-		_, err = conn.Do("SET", video.Key, serialized)
-
-		if err != nil {
+		if _, err = conn.Do("HMSET", redis.Args{}.Add(strings.ToUpper(video.Key)).AddFlat(&video)...); err != nil {
 			log.Println(err)
 		}
 	}
@@ -87,15 +79,15 @@ func (video Video) RemoveAll() {
 	conn := Pool.Get()
 	defer conn.Close()
 
-	exists, err := redis.Int(conn.Do("EXISTS", video.Key))
+	exists, err := redis.Bool(conn.Do("EXISTS", strings.ToUpper(video.Key)))
 
 	if err != nil {
 		log.Println(err)
 	}
 
-	if exists == 1 { // found
+	if exists { // found
 		log.Println("started removing the segment file: ", video.Dir)
-		_, err = conn.Do("DEL", video.Key)
+		_, err = conn.Do("DEL", strings.ToUpper(video.Key))
 
 		if err != nil {
 			log.Println(err)
