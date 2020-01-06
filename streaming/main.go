@@ -59,14 +59,8 @@ func hlsTsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func indexHandlerPage(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "index.html")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-}
-
 func handlers() *mux.Router {
 	router := mux.NewRouter()
-	router.HandleFunc("/", indexHandlerPage)
 	router.HandleFunc("/{videoName}/index.m3u8", hlsM3U8Handler).Methods("GET")
 	router.HandleFunc("/{videoName}/{segName:index[0-9]+.ts}", hlsTsHandler).Methods("GET")
 
