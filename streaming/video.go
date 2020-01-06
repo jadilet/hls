@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -54,7 +53,6 @@ func (video *Video) tsFileExist(tsFile string) bool {
 }
 
 func findVideo(key string) (*Video, error) {
-	log.Println("key ", key)
 	conn := pool.Get()
 	defer conn.Close()
 
@@ -63,7 +61,6 @@ func findVideo(key string) (*Video, error) {
 	if err != nil {
 		return nil, err
 	} else if len(values) == 0 {
-		log.Println("not found")
 		return nil, errNoVideo
 	}
 
