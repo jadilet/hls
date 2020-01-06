@@ -11,8 +11,8 @@ import (
 	"github.com/gomodule/redigo/redis"
 
 	"github.com/fsnotify/fsnotify"
-	"github.com/jadilet/hls/segementation/cmd"
-	"github.com/jadilet/hls/segementation/segment"
+	"github.com/jadilet/hls/segmentation/cmd"
+	"github.com/jadilet/hls/segmentation/segment"
 )
 
 // CheckSegment walks video folder for segmenting

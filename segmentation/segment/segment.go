@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/gomodule/redigo/redis"
-	"github.com/jadilet/hls/segementation/cmd"
+	"github.com/jadilet/hls/segmentation/cmd"
 )
 
 // Pool of redis connection
